@@ -1,3 +1,4 @@
+#Audrey Beckman
 import pandas as pd
 import matplotlib.pyplot as plt
 
@@ -156,7 +157,6 @@ def polFunction(preferenceData):
 def main():
 
     coffeeSurvey = pd.read_csv("coffee_survey.csv")
-
 
 
     preferenceData = coffeeSurvey[coffeeSurvey['prefer_overall'].notnull()]
