@@ -1,6 +1,7 @@
 #Audrey Beckman
 import pandas as pd
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
+from pathlib import Path
 
 def ageFunction(preferenceData, coffeeSurvey):
 
@@ -32,9 +33,11 @@ def ageFunction(preferenceData, coffeeSurvey):
 
     ageGroups = preferenceData.groupby('age')['prefer_overall'].value_counts(normalize=True)
 
-    print(ageGroups)
+    print(ageGroups.reset_index())
 
     # coffee D beat by Coffee A/B in >65 and Coffee B/C in 55-64
+
+    return ageGroups.reset_index()
 
 
 def genderFunction(preferenceData):
@@ -156,7 +159,11 @@ def polFunction(preferenceData):
 
 def main():
 
-    coffeeSurvey = pd.read_csv("coffee_survey.csv")
+    
+    coffeeSurvey= pd.read_csv(Path(__file__).parent / "coffee_survey.csv")
+
+
+    #coffeeSurvey = pd.read_csv("coffee_survey.csv")
 
 
     preferenceData = coffeeSurvey[coffeeSurvey['prefer_overall'].notnull()]
@@ -176,7 +183,37 @@ def main():
     #most people prefer coffee D
 
 
-    #ageFunction(preferenceData, coffeeSurvey)
+    ageGroups = ageFunction(preferenceData, coffeeSurvey)
+    overallPreference = pd.DataFrame(overallPreference)
+    overallPreference['age'] = 'total'
+    ageGroups = pd.concat([ageGroups, overallPreference.reset_index()])
+    #print(overallPreference.reset_index())
+    print(ageGroups)
+
+    """ 
+with ui.card(full_screen=True):
+    @render_plotly
+    def countHeatmap2():
+        import plotly.express as px
+        
+        preferenceData = coffeeSurvey[coffeeSurvey['prefer_overall'].notnull()]
+
+        #demographicGroups = preferenceData.groupby(input.demographic())['prefer_overall'].value_counts(normalize=True)
+        #demographicGroups = demographicGroups.reset_index()
+        
+
+        overallPreference = pd.DataFrame(preferenceData['prefer_overall'].value_counts(normalize=True))
+        #overallPreference[input.demographic()] = 'total'
+
+        overallPreference = pd.pivot_table(overallPreference.reset_index(), values='proportion', columns='prefer_overall')
+        
+        #demographicGroups = pd.concat([demographicGroups, overallPreference.reset_index()])
+        #demographicGroups = pd.pivot_table(demographicGroups, values='proportion', index=input.demographic(), columns='prefer_overall')
+
+        return px.imshow(overallPreference, color_continuous_scale="mint")
+    
+     """
+
 
     #genderFunction(preferenceData)
 
@@ -188,7 +225,7 @@ def main():
 
     #childFunction(preferenceData)
 
-    polFunction(preferenceData)
+    #polFunction(preferenceData)
 
 
 if __name__ == "__main__":
