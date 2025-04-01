@@ -1,6 +1,6 @@
 # Combined Market Analysis App
-#Plot code by Audrey Beckman
-#Tab code by Hansol Lee
+#Individual pages by Audrey Beckman
+#Tab organization by Hansol Lee
 from shiny.express import input, render, ui
 from shinywidgets import render_plotly
 import pandas as pd
