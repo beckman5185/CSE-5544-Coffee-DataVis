@@ -40,13 +40,19 @@ with ui.navset_tab():
                     demographicGroups = demographicGroups.reset_index()
 
                     #pivot table to heatmap format
-                    demographicGroups = pd.pivot_table(demographicGroups, values='proportion', index=input.demographic(), columns='prefer_overall')
+                    #demographicGroups = pd.pivot_table(demographicGroups, values='proportion', index=input.demographic(), columns='prefer_overall')
 
                     #make heatmap
-                    return px.imshow(demographicGroups, color_continuous_scale="mint")
+                    #return px.imshow(demographicGroups, color_continuous_scale="mint")
+
+
+                    demographicGroups = demographicGroups.sort_values(by=[input.demographic(), 'prefer_overall'])
+                    
+                    #make grouped bar chart
+                    return px.bar(demographicGroups, x=input.demographic(), y='proportion', color='prefer_overall', barmode='group', color_discrete_sequence=px.colors.qualitative.Prism)
 
             with ui.card():
-                #count heamap
+                #count heatmap
                 ui.card_header("Count")
                 @render_plotly
                 def countHeatmap():
@@ -63,7 +69,7 @@ with ui.navset_tab():
                     demographicGroups = pd.pivot_table(demographicGroups, values='count', index=input.demographic(), columns='prefer_overall')
 
                     #make heatmap
-                    return px.imshow(demographicGroups, color_continuous_scale="mint")
+                    return px.imshow(demographicGroups, color_continuous_scale="algae")
 
     # Second tab for Coffee Traits Analysis
     with ui.nav_panel("Coffee Traits"):
