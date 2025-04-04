@@ -4,9 +4,11 @@
 from shiny.express import input, render, ui
 from shinywidgets import render_plotly
 import pandas as pd
+from pathlib import Path
 
 # Read in data once for the entire app
-coffeeSurvey = pd.read_csv("CSE-5544-Coffee-DataVis/coffee_survey.csv")
+app_dir = Path(__file__).parent.parent
+coffeeSurvey = pd.read_csv(app_dir/"coffee_survey.csv")
 
 # Page title and settings
 ui.page_opts(title="Coffee Market Analysis", fillable=True)
