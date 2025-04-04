@@ -20,14 +20,14 @@ with ui.navset_tab():
                 #select demographic variable
                 ui.input_selectize(
                     "demographic", "Select demographic variable",
-                    ['age', 'gender', 'education_level', 'ethnicity_race',
-                     'employment_status', 'number_children', 'political_affiliation']
+                    ['Age', 'Gender', 'Education Level', 'Ethnicity Race',
+                     'Employment Status', 'Number Children', 'Political Affiliation']
                 )
 
             # Main panel content for demographics
             with ui.card():
                 #proportion heatmap
-                ui.card_header("Proportion")
+                ui.card_header("Blend Preference - Proportions")
                 @render_plotly
                 def proportionHeatmap():
                     import plotly.express as px
@@ -36,24 +36,24 @@ with ui.navset_tab():
                     preferenceData = coffeeSurvey[coffeeSurvey['prefer_overall'].notnull()]
 
                     #group by level of demographic variable
-                    demographicGroups = preferenceData.groupby(input.demographic())['prefer_overall'].value_counts(normalize=True)
+                    inputDemographic = input.demographic().replace(" ", "_").lower()
+                    demographicGroups = preferenceData.groupby(inputDemographic)['prefer_overall'].value_counts(normalize=True)
                     demographicGroups = demographicGroups.reset_index()
 
-                    #pivot table to heatmap format
-                    #demographicGroups = pd.pivot_table(demographicGroups, values='proportion', index=input.demographic(), columns='prefer_overall')
+                    #sort category values
+                    demographicGroups = demographicGroups.sort_values(by=[inputDemographic, 'prefer_overall'])
 
-                    #make heatmap
-                    #return px.imshow(demographicGroups, color_continuous_scale="mint")
-
-
-                    demographicGroups = demographicGroups.sort_values(by=[input.demographic(), 'prefer_overall'])
-                    
                     #make grouped bar chart
-                    return px.bar(demographicGroups, x=input.demographic(), y='proportion', color='prefer_overall', barmode='group', color_discrete_sequence=px.colors.qualitative.Prism)
+                    return px.bar(demographicGroups, x=inputDemographic, y='proportion', color='prefer_overall', barmode='group', 
+                                  color_discrete_sequence=px.colors.qualitative.Prism, title='Proportions of Preferred Blend by Demographic Group', 
+                                  labels={ inputDemographic : input.demographic(),
+                                      "proportion": "Proportion of " + input.demographic() + " Group",
+                                      "prefer_overall" : "Preferred Blend"
+                                      })
 
             with ui.card():
                 #count heatmap
-                ui.card_header("Count")
+                ui.card_header("Blend Preference - Counts")
                 @render_plotly
                 def countHeatmap():
                     import plotly.express as px
@@ -62,14 +62,16 @@ with ui.navset_tab():
                     preferenceData = coffeeSurvey[coffeeSurvey['prefer_overall'].notnull()]
 
                     #group by level of demographic variable
-                    demographicGroups = preferenceData.groupby(input.demographic())['prefer_overall'].value_counts(normalize=False)
+                    inputDemographic = input.demographic().replace(" ", "_").lower()
+                    demographicGroups = preferenceData.groupby(inputDemographic)['prefer_overall'].value_counts(normalize=False)
                     demographicGroups = demographicGroups.reset_index()
 
                     #pivot table to heatmap format
-                    demographicGroups = pd.pivot_table(demographicGroups, values='count', index=input.demographic(), columns='prefer_overall')
+                    demographicGroups = pd.pivot_table(demographicGroups, values='count', index=inputDemographic, columns='prefer_overall')
 
                     #make heatmap
-                    return px.imshow(demographicGroups, color_continuous_scale="algae")
+                    return px.imshow(demographicGroups, color_continuous_scale="algae", title="Counts of Preferred Blend by Demographic Group", 
+                                     labels={'x':'Preferred Blend', 'y':input.demographic(), 'color':'# Responses'})
 
     # Second tab for Coffee Traits Analysis
     with ui.nav_panel("Coffee Traits"):
@@ -78,29 +80,30 @@ with ui.navset_tab():
                 #select coffee trait
                 ui.input_selectize(
                     "trait", "Select coffee trait",
-                    ['personal_preference', 'bitterness', 'acidity']
+                    ['Personal Preference', 'Bitterness', 'Acidity']
                 )
 
                 #select coffee blends
                 ui.input_checkbox_group(
                     "coffee", "Select coffee blend",
-                    ['coffee_a', 'coffee_b', 'coffee_c', 'coffee_d'],
-                    selected=['coffee_a', 'coffee_b', 'coffee_c', 'coffee_d']
+                    ['Coffee A', 'Coffee B', 'Coffee C', 'Coffee D'],
+                    selected=['Coffee A', 'Coffee B', 'Coffee C', 'Coffee D']
                 )
 
             # Main panel content for traits
             with ui.card():
-                ui.card_header("Coffee Traits")
+                ui.card_header("Blend Traits - Counts")
                 #line chart for trait
                 @render_plotly
                 def lineChart():
                     import plotly.express as px
 
                     #get coffees and traits chosen
-                    coffeeList = input.coffee()
+                    coffeeList = [name.replace(" ", "_").lower() for name in input.coffee()]
+                    inputTrait = input.trait().replace(" ", "_").lower()
                     traitList = []
                     if(len(coffeeList) > 0):
-                        traitList = [coffee + "_" + input.trait() for coffee in coffeeList]
+                        traitList = [coffee + "_" + inputTrait for coffee in coffeeList]
 
                     #get non-null data from survey
                     ratingData = coffeeSurvey[coffeeSurvey[traitList].notnull().all(axis=1)]
@@ -113,8 +116,8 @@ with ui.navset_tab():
 
                         #adjust into long format
                         traitData = traitData.reset_index()
-                        traitData["coffee"] = traitList[i][0:8]
-                        traitData = traitData.rename(columns={traitList[i]: input.trait()})
+                        traitData["coffee"] = input.coffee()[i]
+                        traitData = traitData.rename(columns={traitList[i]: inputTrait})
 
                         #add to dataframe
                         traitFrame = pd.concat([traitFrame, traitData])
@@ -122,8 +125,9 @@ with ui.navset_tab():
 
                     if not (traitFrame.empty):
                         #sort x values and colors
-                        traitFrame = traitFrame.sort_values(by=[input.trait(), "coffee"])
+                        traitFrame = traitFrame.sort_values(by=[inputTrait, "coffee"])
 
                         #make line chart
-                        return px.line(traitFrame, y="count", x=input.trait(), color="coffee",
-                                       markers=True, color_discrete_sequence=px.colors.qualitative.Set1)
+                        return px.line(traitFrame, y="count", x=inputTrait, color="coffee",
+                                       labels={'count':'# Responses', inputTrait:input.trait() + " Rating (1-5 scale)", 'coffee':'Coffee Blend'},
+                                       title="Ratings of " + input.trait() + " Trait among Blends", markers=True, color_discrete_sequence=px.colors.qualitative.Set1)

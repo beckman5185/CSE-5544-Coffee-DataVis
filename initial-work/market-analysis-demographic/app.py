@@ -29,12 +29,6 @@ with ui.card():
         #group by level of demographic variable
         demographicGroups = preferenceData.groupby(input.demographic())['prefer_overall'].value_counts(normalize=True)
         demographicGroups = demographicGroups.reset_index()
-        
-
-        #overallPreference = pd.DataFrame(preferenceData['prefer_overall'].value_counts(normalize=True))
-        #overallPreference[input.demographic()] = 'total'
-        
-        #demographicGroups = pd.concat([demographicGroups, overallPreference.reset_index()])
 
         #pivot table to heatmap format
         demographicGroups = pd.pivot_table(demographicGroups, values='proportion', index=input.demographic(), columns='prefer_overall')
@@ -55,12 +49,6 @@ with ui.card():
         #group by level of demographic variable
         demographicGroups = preferenceData.groupby(input.demographic())['prefer_overall'].value_counts(normalize=False)
         demographicGroups = demographicGroups.reset_index()
-        
-
-        #overallPreference = pd.DataFrame(preferenceData['prefer_overall'].value_counts(normalize=True))
-        #overallPreference[input.demographic()] = 'total'
-        
-        #demographicGroups = pd.concat([demographicGroups, overallPreference.reset_index()])
 
         #pivot table to heatmap format
         demographicGroups = pd.pivot_table(demographicGroups, values='count', index=input.demographic(), columns='prefer_overall')

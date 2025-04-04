@@ -1,109 +1,101 @@
 #Audrey Beckman
 import pandas as pd
-#import matplotlib.pyplot as plt
 from pathlib import Path
 
 def ageFunction(preferenceData, coffeeSurvey):
 
-    #ageOverall = coffeeSurvey[coffeeSurvey['prefer_overall'].notnull()]['age']
-    #ageOverall = ageOverall[ageOverall.notnull()]
+    #get things with non-null age and preference response
+    ageOverall = coffeeSurvey[coffeeSurvey['prefer_overall'].notnull()]['age']
+    ageOverall = ageOverall[ageOverall.notnull()]
 
-    #age distribution including null values for preference
-    #print(coffeeSurvey['age'].value_counts(normalize=True))
+    #distribution of ages among survey responses
+    print(coffeeSurvey['age'].value_counts(normalize=True))
 
     #unnormalized will show that all preference data have valid age
     overallAge = preferenceData['age'].value_counts(normalize=True)
-
     print(overallAge)
 
-    #preferA = preferenceData[preferenceData['prefer_overall']=='Coffee A']
-    #preferB = preferenceData[preferenceData['prefer_overall']=='Coffee B']
-    #preferC = preferenceData[preferenceData['prefer_overall'] == 'Coffee C']
-    #preferD = preferenceData[preferenceData['prefer_overall'] == 'Coffee D']
 
-    #ageA = preferA['age'].value_counts(normalize=False)
-    #ageB = preferB['age'].value_counts(normalize=False)
-    #ageC = preferC['age'].value_counts(normalize=False)
-    #ageD = preferD['age'].value_counts(normalize=False)
-
-    #print(ageA)
-    #print(ageB)
-    #print(ageC)
-    #print(ageD)
-
+    #get preference proportions by age group
     ageGroups = preferenceData.groupby('age')['prefer_overall'].value_counts(normalize=True)
 
-    print(ageGroups.reset_index())
 
-    # coffee D beat by Coffee A/B in >65 and Coffee B/C in 55-64
-
+    # Notes: coffee D beat by Coffee A/B in >65 and Coffee B/C in 55-64
     return ageGroups.reset_index()
 
 
 def genderFunction(preferenceData):
 
-
     #fewer with not null gender than with normal preference data
     print(len(preferenceData[preferenceData['gender'].notnull()]))
 
-    #much more men than women
 
+    #looking at distribution of gender in data
     genderOverall = preferenceData['gender'].value_counts(normalize=True)
+    #Notes: much more men than women
+
+    #looking at distribution of preference among gender groups
     genderGroups = preferenceData.groupby('gender')['prefer_overall'].value_counts(normalize=True)
 
-    #women prefer B and C - D and A at bottom of coffee groups
-    #men prefer D and A
+    #Notes: women prefer B and C - D and A at bottom of coffee groups
+    #Notes: men prefer D and A
 
     print(genderOverall)
     print(genderGroups)
 
 
 def educationFunction(preferenceData):
-    # fewer with not null gender than with normal preference data
+    #fewer with not null education than with normal preference data
     print(len(preferenceData[preferenceData['education_level'].notnull()]))
 
+    #looking at distribution of education in survey responses
     edOverall = preferenceData['education_level'].value_counts(normalize=True)
+
+    #looking at distribution of preferences by education level
     edGroups = preferenceData.groupby('education_level')['prefer_overall'].value_counts(normalize=True)
 
-    #edGender = preferenceData.groupby('education_level')['gender'].value_counts(normalize=True)
+    #is there correlation between gender and education level?
+    #Note: no
+    edGender = preferenceData.groupby('education_level')['gender'].value_counts(normalize=True)
 
 
     print(edOverall)
     print(edGroups)
-    #print(edGender)
+    print(edGender)
 
-    #high school graduate prefer C and D
-    #some college prefer D and B
+    #Notes: high school graduate prefer C and D
+    #Notes: some college prefer D and B
 
 def raceFunction(preferenceData):
 
 
-    #fewer with not null gender than with normal preference data
+    #fewer with not null race than with normal preference data
     print(len(preferenceData[preferenceData['ethnicity_race'].notnull()]))
 
-    #relative to US - white and asian groups overrepresented, black and hispanic groups underrepresented
-
-
-
+    #distribution of race in survey responses
+    #Note: relative to US - white and asian groups overrepresented, black and hispanic groups underrepresented
     raceOverall = preferenceData['ethnicity_race'].value_counts(normalize=True)
+
+    #distribution of preference by race
     raceGroups = preferenceData.groupby('ethnicity_race')['prefer_overall'].value_counts(normalize=True)
 
-    #black people prefer C and D, hispanic people prefer D and B, native people prefer C and A
+    #Note: Black people prefer C and D, Hispanic people prefer D and B, Native people prefer C and A
 
     print(raceOverall)
     print(raceGroups)
 
 
 def employFunction(preferenceData):
-    # fewer with not null gender than with normal preference data
+    # fewer with not null employment than with normal preference data
     print(len(preferenceData[preferenceData['employment_status'].notnull()]))
 
-    # relative to US - white and asian groups overrepresented, black and hispanic groups underrepresented
-
+    #distribution of employment in responses
     employOverall = preferenceData['employment_status'].value_counts(normalize=True)
+
+    #distribution of preference by employment
     employGroups = preferenceData.groupby('employment_status')['prefer_overall'].value_counts(normalize=True)
 
-    # retirees prefer B and C, part time prefer D and C
+    # Note: retirees prefer B and C, part time prefer D and C
 
 
     print(employOverall)
@@ -111,121 +103,90 @@ def employFunction(preferenceData):
 
 
 def childFunction(preferenceData):
-    # fewer with not null gender than with normal preference data
+    # fewer with not null child response than with normal preference data
     print(len(preferenceData[preferenceData['number_children'].notnull()]))
 
-    # relative to US - white and asian groups overrepresented, black and hispanic groups underrepresented
-
+    # distribution of child count in data
     childOverall = preferenceData['number_children'].value_counts(normalize=True)
+
+    #distribution of preferences by child count
     childGroups = preferenceData.groupby('number_children')['prefer_overall'].value_counts(normalize=True)
 
-    # one child - D and C, 3 children - A and D, more than three - B and A
+    # Note: one child - D and C, 3 children - A and D, more than three - B and A
 
-    #childGender = preferenceData.groupby('number_children')['gender'].value_counts(normalize=True)
+    #does child count correlate with gender?
+    #Note: no
+    childGender = preferenceData.groupby('number_children')['gender'].value_counts(normalize=True)
 
     print(childOverall)
     print(childGroups)
-    #print(childGender)
+    print(childGender)
 
 
 
 
 def polFunction(preferenceData):
-    # fewer with not null gender than with normal preference data
+    # fewer with not null political alignment than with normal preference data
     print(len(preferenceData[preferenceData['political_affiliation'].notnull()]))
 
-    # relative to US - white and asian groups overrepresented, black and hispanic groups underrepresented
-
+    # distribution of political alignments in data
     polOverall = preferenceData['political_affiliation'].value_counts(normalize=True)
+
+    #distribution of preferences by political alignment
     polGroups = preferenceData.groupby('political_affiliation')['prefer_overall'].value_counts(normalize=True)
 
-    # one child - D and C, 3 children - A and D, more than three - B and A
+    #Note: republicans like D and B, all other almost identical
 
-    #republicans like D and B, all other almost identical
-
-    #45-64 less likely to be democrats
-    #polAge = preferenceData.groupby('age')['political_affiliation'].value_counts(normalize=True)
+    #is political affiliation linked with age?
+    #Note: yes, 45-64 less likely to be democrats
+    polAge = preferenceData.groupby('age')['political_affiliation'].value_counts(normalize=True)
 
     print(polOverall)
     print(polGroups)
-    #print(polAge)
-
-
-
-
-
+    print(polAge)
 
 
 
 def main():
 
-    
-    coffeeSurvey= pd.read_csv(Path(__file__).parent / "coffee_survey.csv")
+    #get data
+    coffeeSurvey= pd.read_csv(Path(__file__).parent/"coffee_survey.csv")
 
-
-    #coffeeSurvey = pd.read_csv("coffee_survey.csv")
-
-
+    #read in things with non-null preference data
     preferenceData = coffeeSurvey[coffeeSurvey['prefer_overall'].notnull()]
 
-
+    #overall distribution of preference among all survey participants
     overallPreference = coffeeSurvey[:]['prefer_overall']
     overallPreference = overallPreference[overallPreference.notnull()]
-
     overallPreference = preferenceData['prefer_overall'].value_counts(normalize=True)
 
     print(overallPreference)
 
+    #Note: most people prefer coffee D
 
 
-
-
-    #most people prefer coffee D
-
-
+    #get normalized age counts
     ageGroups = ageFunction(preferenceData, coffeeSurvey)
+
+    #playing with dataframe
     overallPreference = pd.DataFrame(overallPreference)
     overallPreference['age'] = 'total'
     ageGroups = pd.concat([ageGroups, overallPreference.reset_index()])
-    #print(overallPreference.reset_index())
+    print(overallPreference.reset_index())
     print(ageGroups)
 
-    """ 
-with ui.card(full_screen=True):
-    @render_plotly
-    def countHeatmap2():
-        import plotly.express as px
-        
-        preferenceData = coffeeSurvey[coffeeSurvey['prefer_overall'].notnull()]
 
-        #demographicGroups = preferenceData.groupby(input.demographic())['prefer_overall'].value_counts(normalize=True)
-        #demographicGroups = demographicGroups.reset_index()
-        
+    genderFunction(preferenceData)
 
-        overallPreference = pd.DataFrame(preferenceData['prefer_overall'].value_counts(normalize=True))
-        #overallPreference[input.demographic()] = 'total'
+    educationFunction(preferenceData)
 
-        overallPreference = pd.pivot_table(overallPreference.reset_index(), values='proportion', columns='prefer_overall')
-        
-        #demographicGroups = pd.concat([demographicGroups, overallPreference.reset_index()])
-        #demographicGroups = pd.pivot_table(demographicGroups, values='proportion', index=input.demographic(), columns='prefer_overall')
+    raceFunction(preferenceData)
 
-        return px.imshow(overallPreference, color_continuous_scale="mint")
-    
-     """
+    employFunction(preferenceData)
 
+    childFunction(preferenceData)
 
-    #genderFunction(preferenceData)
-
-    #educationFunction(preferenceData)
-
-    #raceFunction(preferenceData)
-
-    #employFunction(preferenceData)
-
-    #childFunction(preferenceData)
-
-    #polFunction(preferenceData)
+    polFunction(preferenceData)
 
 
 if __name__ == "__main__":
