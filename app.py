@@ -96,17 +96,26 @@ def server(input, output, session):
     def pie():
         fig, ax = plt.subplots()
         if (input.pie_plot_data() == "style"):
-            ax.pie(style["count"], autopct='%1.1f%%', startangle=90, colors=brownGradiant(len(style)))
+            percent = 100 * style["count"] / style["count"].sum()
+            percent = np.around(percent, decimals=2)
+            percent = percent.astype(str)
+            ax.pie(style["count"], startangle=90, colors=brownGradiant(len(style)))
             ax.axis('equal')
-            ax.legend(labels=style["style"])
+            ax.legend(labels=style["style"] + " - " + percent + "%")
         elif (input.pie_plot_data() == "roast"):
-            ax.pie(roastL["count"], autopct='%1.1f%%', startangle=90, colors=brownGradiant(len(roastL)))
+            percent = 100 * roastL["count"] / roastL["count"].sum()
+            percent = np.around(percent, decimals=2)
+            percent = percent.astype(str)
+            ax.pie(roastL["count"], startangle=90, colors=brownGradiant(len(roastL)))
             ax.axis('equal')
-            ax.legend(labels=roastL["roast_level"])
+            ax.legend(labels=roastL["roast_level"] + " - " + percent + "%")
         else:
-            ax.pie(caffeine["count"], autopct='%1.1f%%', startangle=90, colors=brownGradiant(len(caffeine)))
+            percent = 100 * caffeine["count"] / caffeine["count"].sum()
+            percent = np.around(percent, decimals=2)
+            percent = percent.astype(str)
+            ax.pie(caffeine["count"], startangle=90, colors=brownGradiant(len(caffeine)))
             ax.axis('equal')
-            ax.legend(labels=caffeine["caffeine"])
+            ax.legend(labels=caffeine["caffeine"] + " - " + percent + "%")
         return plt.gcf()
     
     def brownGradiant(count):
