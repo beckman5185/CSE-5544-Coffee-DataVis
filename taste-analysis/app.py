@@ -1,10 +1,12 @@
 import pandas as pd
 from shiny import App, render, ui
 import matplotlib.pyplot as plt
+from pathlib import Path
 import numpy as np
 
 
-df = pd.read_csv('CSE-5544-Coffee-DataVis\\taste-analysis\coffee_survey.csv')
+app_dir = Path(__file__).parent.parent
+df = pd.read_csv(app_dir/"coffee_survey.csv")
 
 fav_cols = ['submission_id', 'favorite']
 except_fav_cols = [col for col in df.columns if col not in fav_cols]
