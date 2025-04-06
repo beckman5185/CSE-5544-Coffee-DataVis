@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 
-df = pd.read_csv('coffee_survey.csv')
+df = pd.read_csv('CSE-5544-Coffee-DataVis\\taste-analysis\coffee_survey.csv')
 
 fav_cols = ['submission_id', 'favorite']
 except_fav_cols = [col for col in df.columns if col not in fav_cols]
