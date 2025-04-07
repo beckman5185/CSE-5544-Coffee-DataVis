@@ -120,12 +120,6 @@ with ui.layout_columns(col_widths=[6, 6, 12]):
                     },
                     selected='cups'
                 )
-                ui.input_radio_buttons(
-                    "ct_right_detail",
-                    "Base selection",
-                    choices={"Total": "Total"},
-                    inline=True
-                )
 
 
         @render.plot
@@ -182,16 +176,4 @@ def _():
     ui.update_checkbox_group("age", selected=["<18","18-24","25-34","35-44","45-54","55-64",">65"])
     ui.update_checkbox_group("cups", selected=['Less than 1', '1', '2', '3', '4', 'More than 4'])
 
-@reactive.effect
-def _():
-    selected_ct = input.ct_right()
-    df = coffee_survey
-    dummies_cols = [c for c in df.columns if c.startswith(selected_ct + "_")]
-    counts = df[dummies_cols].sum().sort_values(ascending=False)
-    choices = ['Total'] + counts.index.str.replace(f"{selected_ct}_", "").tolist()
-    ui.update_radio_buttons(
-        "ct_right_detail",
-        choices={choice: choice for choice in choices},
-        inline=True
-    )
 

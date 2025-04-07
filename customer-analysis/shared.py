@@ -44,7 +44,7 @@ multiselect_columns = [
 ]
 
 
-coffee_survey_raw = pd.read_csv("CSE-5544-Coffee-DataVis/coffee_survey.csv").iloc[:, 1:]
+coffee_survey_raw = pd.read_csv(app_dir.parent/"coffee_survey.csv").iloc[:, 1:]
 dropped_coffee_survey = (coffee_survey_raw.drop(columns=dropping_columns)
                          .replace(r'\(e.g.,', '(e.g.', regex=True)
                          .replace(r'\ years old', '', regex=True)
