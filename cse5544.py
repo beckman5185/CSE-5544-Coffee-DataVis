@@ -8,8 +8,11 @@ Original file is located at
 """
 
 import pandas as pd
+from pathlib import Path
 
-df= pd.read_csv("coffee_survey.csv")
+app_dir = Path(__file__).parent
+df = pd.read_csv(app_dir/"coffee_survey.csv")
+#df= pd.read_csv("coffee_survey.csv")
 
 df.head(10)
 
